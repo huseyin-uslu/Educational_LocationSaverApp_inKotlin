@@ -1,4 +1,4 @@
-package com.firstprojects.locationsaverwithkotlin
+ package com.firstprojects.locationsaverwithkotlin.activities
 
 import android.content.DialogInterface
 import android.content.Intent
@@ -14,11 +14,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.firstprojects.locationsaverwithkotlin.model.Places
+import com.firstprojects.locationsaverwithkotlin.R
+import com.google.android.gms.maps.*
 
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import java.util.*
@@ -37,7 +36,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     //intent data
     private var checkBoolean = true
-    private var idForDatabase = 1
+    private lateinit var serializableModels : Places
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +49,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //intent
         val getIntent = intent
-        idForDatabase = getIntent.getIntExtra("id", 1)
+        serializableModels = getIntent.getSerializableExtra("model") as Places
         checkBoolean = getIntent.getBooleanExtra("isItNew", true)
 
     }
@@ -105,7 +104,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             //it shows saved data
             mMap = googleMap
             mMap.clear()
-            try {
+          /*  try {
                 val queryRow = sqlite.rawQuery("SELECT * FROM placenames WHERE id = ?", arrayOf(idForDatabase.toString()))
                 val latitudeIndex = queryRow.getColumnIndex("latitude")
                 val longitudeIndex = queryRow.getColumnIndex("longitude")
@@ -121,7 +120,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             } catch (e: Exception) {
                 e.printStackTrace()
                 println(e.localizedMessage)
-            }
+            } */
+            val latlngOldPlace = LatLng(serializableModels.latitude,serializableModels.longitude)
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlngOldPlace,20f))
+            mMap.addMarker(MarkerOptions().title(serializableModels.name).position(latlngOldPlace))
         }
     }
 
