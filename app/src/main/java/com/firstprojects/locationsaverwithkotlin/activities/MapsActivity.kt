@@ -30,6 +30,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var checktheplaceyourehere = 0
     private lateinit var selectedLocationName: String
     private lateinit var selectedLocationMark: LatLng
+    private lateinit var placemodel : Places
 
     //database
     private lateinit var sqlite: SQLiteDatabase
@@ -49,7 +50,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         //intent
         val getIntent = intent
-        serializableModels = getIntent.getSerializableExtra("model") as Places
         checkBoolean = getIntent.getBooleanExtra("isItNew", true)
 
     }
@@ -121,9 +121,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 e.printStackTrace()
                 println(e.localizedMessage)
             } */
+            val getIntent = intent
+            placemodel = getIntent.getSerializableExtra("model") as Places
             val latlngOldPlace = LatLng(serializableModels.latitude,serializableModels.longitude)
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlngOldPlace,20f))
-            mMap.addMarker(MarkerOptions().title(serializableModels.name).position(latlngOldPlace))
+            mMap.addMarker(MarkerOptions().title(placemodel.name).position(latlngOldPlace))
         }
     }
 
